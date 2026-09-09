@@ -33,7 +33,7 @@
             max-width: 210mm;
             min-height: 297mm;
             margin-bottom: 30px;
-            padding: 20px; /* Adapté pour mobile */
+            padding: 20px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             box-sizing: border-box;
             position: relative;
@@ -180,7 +180,6 @@
             border-bottom-color: var(--primary-color);
         }
 
-        /* Nouveaux styles pour la zone de dessin */
         .drawing-container {
             border: 2px dashed #bbb;
             border-radius: 15px;
@@ -194,12 +193,12 @@
         canvas {
             width: 100%;
             height: 100%;
-            touch-action: none; /* Empêche le défilement de l'écran quand on dessine */
+            touch-action: none;
             border-radius: 15px;
         }
 
         .clear-btn {
-            background-color: var(--accent-color);
+            background-color: #666;
             color: white;
             border: none;
             padding: 8px 15px;
@@ -208,6 +207,29 @@
             cursor: pointer;
             margin-top: 10px;
             float: right;
+        }
+
+        /* --- NOUVEAU : BOUTON PDF FLOTTANT --- */
+        .pdf-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .pdf-btn:active {
+            transform: scale(0.95);
         }
 
         .page-footer {
@@ -221,23 +243,23 @@
             width: 100%;
         }
 
-        blockquote {
-            font-size: 1.2em;
-            font-style: italic;
-            text-align: center;
-            border-left: none;
-            margin: 30px 0;
-            color: var(--primary-color);
-            font-family: 'Montserrat', sans-serif;
-        }
-
+        /* --- OPTIMISATION IMPRESSION & PDF --- */
         @media print {
             body { background-color: white; padding: 0; margin: 0; }
             .page { box-shadow: none; margin: 0; border: none; page-break-after: always; }
+            
+            /* On masque les boutons sur le document final */
+            .pdf-btn, .clear-btn { display: none !important; } 
+            
+            /* On s'assure que les couleurs de fond (cases, etc.) s'impriment bien */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 <body>
+
+    <!-- BOUTON FLOTTANT PDF -->
+    <button class="pdf-btn" onclick="window.print()">📥 Enregistrer en PDF</button>
 
     <!-- PAGE 1 : Couverture -->
     <div class="page cover-page">
@@ -474,13 +496,15 @@
             const inputs = document.querySelectorAll("input[type='text'], input[type='checkbox']");
 
             inputs.forEach(input => {
-                // Charger les données sauvegardées
+                // Charger les données
                 const savedValue = localStorage.getItem(input.id);
                 if (savedValue !== null) {
                     if (input.type === 'checkbox') {
                         input.checked = (savedValue === 'true');
                     } else {
                         input.value = savedValue;
+                        // Important pour l'impression PDF : forcer l'attribut HTML value
+                        input.setAttribute('value', savedValue);
                     }
                 }
 
@@ -490,6 +514,8 @@
                         localStorage.setItem(e.target.id, e.target.checked);
                     } else {
                         localStorage.setItem(e.target.id, e.target.value);
+                        // Mettre à jour l'attribut HTML pour que ça s'imprime bien sur le PDF
+                        e.target.setAttribute('value', e.target.value); 
                     }
                 });
             });
@@ -499,16 +525,14 @@
             const ctx = canvas.getContext("2d");
             let isDrawing = false;
 
-            // Ajuster la taille du canvas
             function resizeCanvas() {
                 canvas.width = canvas.parentElement.clientWidth;
                 canvas.height = canvas.parentElement.clientHeight;
-                loadCanvas(); // Recharger le dessin après redimensionnement
+                loadCanvas(); 
             }
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
 
-            // Obtenir les coordonnées exactes (souris ou doigt)
             function getCoordinates(e) {
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -524,7 +548,7 @@
                 const coords = getCoordinates(e);
                 ctx.beginPath();
                 ctx.moveTo(coords.x, coords.y);
-                e.preventDefault(); // Empêche le scroll du téléphone
+                e.preventDefault(); 
             }
 
             function draw(e) {
@@ -541,27 +565,23 @@
             function stopDrawing() {
                 if (isDrawing) {
                     isDrawing = false;
-                    saveCanvas(); // Sauvegarde le dessin quand on lève le doigt
+                    saveCanvas(); 
                 }
             }
 
-            // Événements Souris (Ordi)
             canvas.addEventListener("mousedown", startDrawing);
             canvas.addEventListener("mousemove", draw);
             canvas.addEventListener("mouseup", stopDrawing);
             canvas.addEventListener("mouseout", stopDrawing);
 
-            // Événements Tactiles (Téléphone)
             canvas.addEventListener("touchstart", startDrawing, { passive: false });
             canvas.addEventListener("touchmove", draw, { passive: false });
             canvas.addEventListener("touchend", stopDrawing);
 
-            // Sauvegarder l'image du canvas dans le téléphone
             function saveCanvas() {
                 localStorage.setItem("savedDrawing", canvas.toDataURL());
             }
 
-            // Charger l'image au démarrage
             function loadCanvas() {
                 const savedDrawing = localStorage.getItem("savedDrawing");
                 if (savedDrawing) {
@@ -573,7 +593,6 @@
                 }
             }
 
-            // Bouton Effacer
             document.getElementById("clearCanvas").addEventListener("click", () => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 localStorage.removeItem("savedDrawing");
