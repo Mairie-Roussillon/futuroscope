@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Futuroscope - Carnet Pédagogique</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Nunito:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #00a8e8;
+            --accent-color: #ff5722;
+            --bg-color: #f4f7f6;
+            --text-color: #2b2b2b;
+            --box-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #555; 
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page {
+            background-color: white;
+            width: 100%;
+            max-width: 210mm;
+            min-height: 297mm;
+            margin-bottom: 30px;
+            padding: 20px; /* Adapté pour mobile */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            font-weight: 900;
+            text-align: center;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            font-size: 1.8em;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: var(--accent-color);
+            font-size: 1.3em;
+            margin-top: 25px;
+        }
+
+        p, li {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .hero-img {
+            width: calc(100% + 40px);
+            margin-left: -20px;
+            margin-top: -20px;
+            margin-bottom: 20px;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .section-img {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+
+        .cover-page { text-align: center; }
+        
+        .subtitle {
+            font-size: 1.5em;
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .intro-text {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .student-box {
+            border: 3px dashed var(--secondary-color);
+            border-radius: 15px;
+            padding: 20px;
+            width: 90%;
+            margin: 0 auto;
+            background-color: #f8fbff;
+            text-align: left;
+            font-size: 1.2em;
+            box-sizing: border-box;
+        }
+
+        .student-box p {
+            margin: 15px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        .info-box, .job-box {
+            border-radius: 12px;
+            padding: 15px;
+            margin: 25px 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border-left: 6px solid var(--secondary-color);
+        }
+
+        .job-box {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-left: 6px solid var(--accent-color);
+        }
+
+        .job-box h3 { margin-top: 0; color: #b91c1c; }
+        .job-box ul { padding-left: 20px; }
+        .job-box strong { color: #991b1b; }
+
+        .checkbox-list { list-style: none; padding: 0; }
+        .checkbox-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 1.1em;
+        }
+
+        .checkbox-list input[type="checkbox"] {
+            width: 25px;
+            height: 25px;
+            margin-right: 15px;
+            margin-top: 3px;
+            accent-color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .input-line {
+            border: none;
+            border-bottom: 2px solid #ccc;
+            width: 100%;
+            font-size: 1.1em;
+            padding: 5px;
+            font-family: 'Nunito', sans-serif;
+            background: transparent;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+        
+        .input-line:focus {
+            outline: none;
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Nouveaux styles pour la zone de dessin */
+        .drawing-container {
+            border: 2px dashed #bbb;
+            border-radius: 15px;
+            background-color: #fafafa;
+            margin-top: 10px;
+            position: relative;
+            width: 100%;
+            height: 350px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none; /* Empêche le défilement de l'écran quand on dessine */
+            border-radius: 15px;
+        }
+
+        .clear-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            float: right;
+        }
+
+        .page-footer {
+            margin-top: 30px;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 0.9em;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        blockquote {
+            font-size: 1.2em;
+            font-style: italic;
+            text-align: center;
+            border-left: none;
+            margin: 30px 0;
+            color: var(--primary-color);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        @media print {
+            body { background-color: white; padding: 0; margin: 0; }
+            .page { box-shadow: none; margin: 0; border: none; page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1 : Couverture -->
+    <div class="page cover-page">
+        <img src="mission_futur.jfif" alt="Mission Futuroscope - Couverture" class="hero-img">
+        <h1>MISSION FUTUROSCOPE</h1>
+        <div class="subtitle">L'Envers du Décor</div>
+        <p class="intro-text">Explore les coulisses et découvre les métiers du futur !</p>
+        
+        <div class="student-box">
+            <h3 style="margin-top:0; color: var(--secondary-color); text-align: center; text-transform: uppercase;">Carnet de bord VIP</h3>
+            <p>Prénom : <input type="text" id="input_prenom" class="input-line"></p>
+            <p>Nom : <input type="text" id="input_nom" class="input-line"></p>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 1</span>
+        </div>
+    </div>
+
+    <!-- PAGE 2 : Briefing -->
+    <div class="page">
+        <h2>🚀 Briefing de Mission</h2>
+        <p><strong>Bienvenue dans la matrice !</strong></p>
+        <p>Aujourd'hui, tu n'es pas qu'un simple visiteur. Tu es un <strong>VIP (Voyageur Initié aux Professions)</strong>. Derrière chaque cri de joie dans un grand huit, il y a des centaines de professionnels.</p>
+        
+        <div class="info-box">
+            <h3 style="margin-top: 0; color: var(--primary-color);">Ta mission, si tu l'acceptes :</h3>
+            <ul>
+                <li><strong>Vivre</strong> les attractions à fond.</li>
+                <li><strong>Ouvrir l'œil</strong> pour repérer les secrets de fabrication.</li>
+                <li><strong>Découvrir</strong> des métiers insoupçonnés.</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 2</span>
+        </div>
+    </div>
+
+    <!-- PAGE 3 : Ingénierie -->
+    <div class="page">
+        <h2>🤖 Ingénierie & Mécanique</h2>
+        <img src="Inge et meca.jfif" alt="Ingénierie Mécatronique" class="section-img">
+        <h3>Attraction cible : Danse avec les Robots</h3>
+        <p>Tu es secoué dans tous les sens par un bras robotique. Mais comment ça tient ?</p>
+        <p><strong>L'Exemple concret :</strong> Ces robots assemblent normalement des voitures ! Des ingénieurs les ont reprogrammés pour qu'ils soient 100% sécurisés pour des humains.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Ingénieur(e) Mécatronique</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Donner "vie" et "intelligence" à des machines.</li>
+                <li><strong>Études :</strong> Bac +5 (École d'ingénieurs).</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 3</span>
+        </div>
+    </div>
+
+    <!-- PAGE 4 : Numérique -->
+    <div class="page">
+        <h2>🌍 Le Numérique & La VR</h2>
+        <img src="num et vr.jfif" alt="Développement VR" class="section-img">
+        <h3>Attraction cible : L'Extraordinaire Voyage</h3>
+        <p><strong>L'Exemple concret :</strong> L'écran fait 600 m². Pour que l'image soit nette, il faut des serveurs informatiques surpuissants et des réseaux de fibre optique invisibles.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Développeur(se) VR/AR</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Créer des mondes virtuels ultra-réalistes.</li>
+                <li><strong>Études :</strong> Bac +2 à Bac +5.</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 4</span>
+        </div>
+    </div>
+
+    <!-- PAGE 5 : Scénographie -->
+    <div class="page">
+        <h2>🌪️ La Scénographie</h2>
+        <img src="Scenographie.jfif" alt="Scénographie" class="section-img">
+        <h3>Attraction cible : Chasseurs de Tornades</h3>
+        <p><strong>L'Exemple concret :</strong> L'art de te plonger dans une ambiance. Le plus grand écran LED cylindrique d'Europe tourne autour de toi pour te faire perdre tes repères.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Scénographe</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Penser les décors et la lumière pour créer une émotion.</li>
+                <li><strong>Études :</strong> Écoles d'art ou design (Bac +3 à Bac +5).</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 5</span>
+        </div>
+    </div>
+
+    <!-- PAGE 6 : Événementiel -->
+    <div class="page">
+        <h2>✨ L'Événementiel</h2>
+        <img src="event.jfif" alt="Régie Spectacle" class="section-img">
+        <h3>Attraction cible : Le Spectacle Nocturne</h3>
+        <p><strong>L'Exemple concret :</strong> Chaque soir, des techniciens s'assurent que le bouton "Feux d'artifice" est appuyé exactement au moment où la musique explose.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Régisseur(se) Général(e)</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Le chef d'orchestre de l'ombre (son, lumière).</li>
+                <li><strong>Études :</strong> BTS Métiers de l'audiovisuel.</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 6</span>
+        </div>
+    </div>
+
+    <!-- PAGE 7 : Sécurité -->
+    <div class="page">
+        <h2>🛡️ La Sécurité</h2>
+        <img src="secu.jfif" alt="Maintenance" class="section-img">
+        <h3>Attraction cible : Objectif Mars</h3>
+        <p><strong>L'Exemple concret :</strong> Si un harnais n'est pas bien verrouillé, l'ordinateur central bloque automatiquement le démarrage.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Technicien(ne) de Maintenance</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Les "médecins" des attractions qui vérifient tout chaque matin.</li>
+                <li><strong>Études :</strong> Bac Pro ou BTS Maintenance.</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 7</span>
+        </div>
+    </div>
+
+    <!-- PAGE 8 : Restauration -->
+    <div class="page">
+        <h2>🍔 Restauration Inédite</h2>
+        <img src="resto.jfif" alt="Space Loop" class="section-img">
+        <h3>Focus : Restaurant Space Loop</h3>
+        <p><strong>L'Exemple concret :</strong> Créer un concept où les plats font des loopings et gérer les stocks avec une précision militaire.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Manager de Restauration</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Gérer les équipes et l'hygiène tout en offrant un "show".</li>
+                <li><strong>Études :</strong> BTS Hôtellerie-Restauration.</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 8</span>
+        </div>
+    </div>
+
+    <!-- PAGE 9 : Écologie -->
+    <div class="page">
+        <h2>🌱 Le Défi Écologique</h2>
+        <img src="ecologie.jfif" alt="Écologie" class="section-img">
+        <h3>L'Objectif Zéro Carbone</h3>
+        <p><strong>L'Exemple concret :</strong> Le parc produit sa propre énergie avec des panneaux solaires sur les parkings. L'eau est recyclée par des plantes.</p>
+        
+        <div class="job-box">
+            <h3>🔍 Zoom Métier : Responsable RSE / Énergéticien</h3>
+            <ul>
+                <li><strong>C'est quoi ?</strong> Trouver des solutions pour réduire la pollution.</li>
+                <li><strong>Études :</strong> Master en développement durable.</li>
+            </ul>
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 9</span>
+        </div>
+    </div>
+
+    <!-- PAGE 10 : Auto-évaluation -->
+    <div class="page">
+        <h2>🎯 Et toi, quel est ton profil ?</h2>
+        <p style="font-size: 1.2em; margin-bottom: 20px;">Parmi tous ces domaines, lequel te fait le plus vibrer ? (Coche tes préférences)</p>
+        
+        <ul class="checkbox-list">
+            <li><input type="checkbox" id="check_meca"> <strong>Les machines :</strong> Comprendre comment ça marche, réparer.</li>
+            <li><input type="checkbox" id="check_num"> <strong>Le numérique :</strong> Coder, créer des univers virtuels.</li>
+            <li><input type="checkbox" id="check_art"> <strong>L'artistique :</strong> Créer des décors, faire rêver.</li>
+            <li><input type="checkbox" id="check_orga"> <strong>L'organisation :</strong> Gérer des équipes, accueillir le public.</li>
+            <li><input type="checkbox" id="check_eco"> <strong>L'écologie :</strong> Protéger l'environnement.</li>
+        </ul>
+        
+        <div style="margin-top: 40px;">
+            <p><strong>Mon attraction préférée aujourd'hui :</strong></p>
+            <input type="text" id="input_attraction_pref" class="input-line">
+            
+            <p style="margin-top: 30px;"><strong>Le métier qui m'a surpris :</strong></p>
+            <input type="text" id="input_metier_surpris" class="input-line">
+        </div>
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 10</span>
+        </div>
+    </div>
+
+    <!-- PAGE 11 : Création -->
+    <div class="page">
+        <h2>💡 Espace Création</h2>
+        
+        <h3>Mes idées :</h3>
+        <p>Si tu devais inventer la prochaine attraction, quel en serait le thème ?</p>
+        <input type="text" id="input_idee_1" class="input-line">
+        <input type="text" id="input_idee_2" class="input-line">
+        
+        <h3 style="margin-top: 30px;">Croquis :</h3>
+        <p>Dessine avec ton doigt la machine ou le robot qui t'a le plus impressionné aujourd'hui.</p>
+        
+        <div class="drawing-container">
+            <canvas id="drawingCanvas"></canvas>
+        </div>
+        <button class="clear-btn" id="clearCanvas">Effacer le dessin</button>
+        
+        <div class="page-footer">
+            <span>Mission Futuroscope</span>
+            <span>Page 11</span>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE SAUVEGARDE ET DESSIN -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // --- 1. SAUVEGARDE DES TEXTES ET CASES À COCHER ---
+            const inputs = document.querySelectorAll("input[type='text'], input[type='checkbox']");
+
+            inputs.forEach(input => {
+                // Charger les données sauvegardées
+                const savedValue = localStorage.getItem(input.id);
+                if (savedValue !== null) {
+                    if (input.type === 'checkbox') {
+                        input.checked = (savedValue === 'true');
+                    } else {
+                        input.value = savedValue;
+                    }
+                }
+
+                // Sauvegarder à chaque changement
+                input.addEventListener("input", (e) => {
+                    if (e.target.type === 'checkbox') {
+                        localStorage.setItem(e.target.id, e.target.checked);
+                    } else {
+                        localStorage.setItem(e.target.id, e.target.value);
+                    }
+                });
+            });
+
+            // --- 2. GESTION DU DESSIN (CANVAS) TACTILE ---
+            const canvas = document.getElementById("drawingCanvas");
+            const ctx = canvas.getContext("2d");
+            let isDrawing = false;
+
+            // Ajuster la taille du canvas
+            function resizeCanvas() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+                loadCanvas(); // Recharger le dessin après redimensionnement
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Obtenir les coordonnées exactes (souris ou doigt)
+            function getCoordinates(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                const coords = getCoordinates(e);
+                ctx.beginPath();
+                ctx.moveTo(coords.x, coords.y);
+                e.preventDefault(); // Empêche le scroll du téléphone
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                const coords = getCoordinates(e);
+                ctx.lineWidth = 4;
+                ctx.lineCap = "round";
+                ctx.strokeStyle = "#0056b3";
+                ctx.lineTo(coords.x, coords.y);
+                ctx.stroke();
+                e.preventDefault();
+            }
+
+            function stopDrawing() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    saveCanvas(); // Sauvegarde le dessin quand on lève le doigt
+                }
+            }
+
+            // Événements Souris (Ordi)
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseout", stopDrawing);
+
+            // Événements Tactiles (Téléphone)
+            canvas.addEventListener("touchstart", startDrawing, { passive: false });
+            canvas.addEventListener("touchmove", draw, { passive: false });
+            canvas.addEventListener("touchend", stopDrawing);
+
+            // Sauvegarder l'image du canvas dans le téléphone
+            function saveCanvas() {
+                localStorage.setItem("savedDrawing", canvas.toDataURL());
+            }
+
+            // Charger l'image au démarrage
+            function loadCanvas() {
+                const savedDrawing = localStorage.getItem("savedDrawing");
+                if (savedDrawing) {
+                    const img = new Image();
+                    img.src = savedDrawing;
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0);
+                    };
+                }
+            }
+
+            // Bouton Effacer
+            document.getElementById("clearCanvas").addEventListener("click", () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                localStorage.removeItem("savedDrawing");
+            });
+        });
+    </script>
+</body>
+</html>
